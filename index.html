@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Omia waitlist</title>
+<meta name="description" content="Omia uses a face scan to track the visible look of breakouts, uneven tone and texture over time. Join the waitlist.">
+<meta property="og:title" content="Join the Omia waitlist">
+<meta property="og:description" content="Track your skin by scan, not by memory.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#F5F4ED">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B766A'/%3E%3Ctext x='32' y='45' font-family='Georgia' font-size='38' fill='%23F5F4ED' text-anchor='middle'%3EO%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --paper: #F5F4ED;
+    --ink: #15211F;
+    --ink-soft: #4A5654;
+    --teal: #0B766A;
+    --teal-deep: #075A51;
+    --mint: #D6E9E2;
+    --white: #FFFFFF;
+    --error: #A3392B;
+    --serif: Georgia, "Times New Roman", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    --edge: clamp(20px, 6vw, 72px);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: var(--paper);
+    color: var(--ink);
+    font: 17px/1.5 var(--sans);
+    display: flex;
+    flex-direction: column;
+  }
+  .page {
+    flex: 1;
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: max(20px, env(safe-area-inset-top)) var(--edge) 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    align-content: start;
+    gap: 32px;
+  }
+  .brand {
+    font: 400 22px/1 var(--serif);
+    color: var(--teal);
+    text-decoration: none;
+    padding: 6px 0;
+    justify-self: start;
+  }
+  h1 {
+    font: 400 clamp(38px, 10vw, 72px)/1.02 var(--serif);
+    letter-spacing: -0.02em;
+    margin: 0 0 14px;
+    max-width: 11ch;
+  }
+  .lede {
+    margin: 0 0 24px;
+    max-width: 34em;
+    color: var(--ink-soft);
+  }
+
+  /* Form */
+  form { max-width: 440px; }
+  label.field { display: block; font-weight: 600; font-size: 15px; margin-bottom: 8px; }
+  input[type=email] {
+    width: 100%;
+    font: 400 18px/1.2 var(--sans); /* >=16px stops iOS zoom */
+    color: var(--ink);
+    background: var(--white);
+    border: 1.5px solid #C9CFC9;
+    border-radius: 12px;
+    padding: 16px;
+    outline: none;
+  }
+  input[type=email]:focus-visible { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(11,118,106,.22); }
+  input[aria-invalid=true] { border-color: var(--error); }
+  fieldset { border: 0; padding: 0; margin: 20px 0 22px; }
+  legend { font-size: 15px; font-weight: 600; padding: 0; margin-bottom: 10px; }
+  legend span { font-weight: 400; color: var(--ink-soft); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip input { position: absolute; opacity: 0; pointer-events: none; }
+  .chip span {
+    display: inline-block;
+    padding: 10px 16px;
+    border: 1.5px solid var(--teal);
+    border-radius: 999px;
+    color: var(--teal);
+    font-size: 15px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .chip input:checked + span { background: var(--teal); color: var(--paper); }
+  .chip input:focus-visible + span { outline: 3px solid rgba(11,118,106,.35); outline-offset: 2px; }
+  button {
+    width: 100%;
+    font: 600 18px/1 var(--sans);
+    color: var(--paper);
+    background: var(--teal);
+    border: 0;
+    border-radius: 12px;
+    padding: 18px;
+    cursor: pointer;
+  }
+  button:hover { background: var(--teal-deep); }
+  button:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  button[disabled] { opacity: .7; cursor: progress; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .msg:empty { display: none; }
+  .msg { margin: 12px 0 0; font-size: 15px; color: var(--error); }
+  .fine { margin: 14px 0 0; font-size: 14px; color: var(--ink-soft); }
+
+  /* Confirmation */
+  .done { max-width: 440px; }
+  .done h2 { font: 400 clamp(32px, 8vw, 44px)/1.1 var(--serif); margin: 0 0 12px; }
+  .done p { margin: 0 0 20px; }
+  .done a.follow {
+    display: inline-block;
+    padding: 14px 20px;
+    border: 1.5px solid var(--teal);
+    border-radius: 12px;
+    color: var(--teal);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .done a.follow:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  [hidden] { display: none !important; }
+
+  /* Scan strip: the one memorable element */
+  .scans { padding-bottom: 8px; }
+  .strip {
+    display: grid;
+    grid-template-columns: 1fr 14px 1fr 14px 1fr;
+    align-items: center;
+  }
+  .link { height: 1.5px; background: var(--teal); opacity: .6; }
+  .frame {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    background: var(--white);
+    border-radius: 14px;
+    padding: 6px;
+  }
+  .frame .well {
+    position: relative;
+    height: 100%;
+    border-radius: 9px;
+    background-color: var(--mint);
+    background-image: radial-gradient(circle, rgba(11,118,106,.28) 1.2px, transparent 1.6px);
+    background-size: 12px 12px;
+    background-position: 6px 6px;
+    overflow: hidden;
+  }
+  .sweep {
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 2px;
+    background: var(--teal);
+    box-shadow: 0 0 14px 3px rgba(11,118,106,.35);
+    opacity: 0;
+  }
+  .caps { display: grid; grid-template-columns: 1fr 14px 1fr 14px 1fr; margin-top: 10px; }
+  .caps span { text-align: center; font-size: 14px; }
+  .caps span:nth-child(even) { visibility: hidden; }
+  .scans p { margin: 16px 0 0; font-size: 15px; color: var(--ink-soft); max-width: 30em; }
+
+  footer {
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 36px var(--edge) max(24px, env(safe-area-inset-bottom));
+    font-size: 14px;
+  }
+  footer a { color: var(--teal); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .sweep { animation: sweep 1.8s cubic-bezier(.45,.05,.35,1) .5s 1 both; }
+    @keyframes sweep {
+      0% { top: 0; opacity: 0; }
+      8% { opacity: 1; }
+      92% { opacity: 1; }
+      100% { top: calc(100% - 2px); opacity: 0; }
+    }
+  }
+
+  @media (min-width: 900px) {
+    .page {
+      grid-template-columns: 1.1fr 1fr;
+      column-gap: 72px;
+      align-items: center;
+      align-content: center;
+      padding-top: 32px;
+    }
+    .brand { grid-column: 1 / -1; align-self: start; }
+    .scans { padding-bottom: 0; }
+  }
+</style>
+</head>
+<body>
+<main class="page">
+  <a class="brand" href="https://www.instagram.com/omiaskin/">Omia</a>
+
+  <section aria-labelledby="title">
+    <h1 id="title">Track your skin by scan, not by memory.</h1>
+    <p class="lede">Omia uses a face scan to track the visible look of breakouts, uneven tone and texture, so you can see where to start and how your skin changes from scan to scan.</p>
+
+    <form id="signup" novalidate>
+      <label class="field" for="email">Email</label>
+      <input id="email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="you@example.com" required aria-describedby="msg">
+
+      <fieldset>
+        <legend>What do you want to keep an eye on? <span>Optional</span></legend>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" name="interests" value="Breakouts"><span>Breakouts</span></label>
+          <label class="chip"><input type="checkbox" name="interests" value="Uneven tone"><span>Uneven tone</span></label>
+          <label class="chip"><input type="checkbox" name="interests" value="Texture"><span>Texture</span></label>
+        </div>
+      </fieldset>
+
+      <div class="hp" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off"></label></div>
+
+      <button type="submit" id="submit">Join the waitlist</button>
+      <p class="msg" id="msg" role="alert" aria-live="assertive"></p>
+      <p class="fine">We'll only email you about Omia's launch. Reply to any email to be removed.</p>
+    </form>
+
+    <div class="done" id="done" hidden tabindex="-1">
+      <h2 id="done-title">You're on the waitlist.</h2>
+      <p id="done-text">We'll email <strong id="done-email"></strong> when Omia is ready for you.</p>
+      <a class="follow" href="https://www.instagram.com/omiaskin/">Follow @OmiaSkin for updates</a>
+    </div>
+  </section>
+
+  <section class="scans" aria-label="How Omia compares scans">
+    <div class="strip" aria-hidden="true">
+      <div class="frame"><div class="well"><div class="sweep"></div></div></div>
+      <div class="link"></div>
+      <div class="frame"><div class="well"></div></div>
+      <div class="link"></div>
+      <div class="frame"><div class="well"></div></div>
+    </div>
+    <div class="caps" aria-hidden="true"><span>Scan 1</span><span></span><span>Scan 2</span><span></span><span>Scan 3</span></div>
+    <p>Each scan is set up the same way, so you're comparing like with like instead of photos taken in different light.</p>
+  </section>
+</main>
+
+<footer>
+  <a href="https://www.instagram.com/omiaskin/">@OmiaSkin</a> on Instagram
+</footer>
+
+<script src="config.js"></script>
+<script>
+(function () {
+  var form = document.getElementById('signup');
+  var email = document.getElementById('email');
+  var msg = document.getElementById('msg');
+  var btn = document.getElementById('submit');
+  var done = document.getElementById('done');
+  var RE = /^[^\s@,;<>"]+@[^\s@,;<>"]+\.[^\s@,;<>"]{2,}$/;
+  var params = new URLSearchParams(location.search);
+  var source = (params.get('src') || params.get('utm_source') || 'instagram-bio').slice(0, 40);
+
+  function fail(text) {
+    msg.textContent = text;
+    btn.disabled = false;
+    btn.textContent = 'Join the waitlist';
+  }
+
+  email.addEventListener('input', function () {
+    email.removeAttribute('aria-invalid');
+    msg.textContent = '';
+  });
+
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var value = email.value.trim();
+    if (!RE.test(value)) {
+      email.setAttribute('aria-invalid', 'true');
+      email.focus();
+      return fail('Enter an email address like name@example.com.');
+    }
+    if (!window.OMIA_ENDPOINT) {
+      return fail('Signups open shortly. Check back soon.');
+    }
+    var interests = Array.prototype.map.call(
+      form.querySelectorAll('input[name=interests]:checked'), function (i) { return i.value; });
+    btn.disabled = true;
+    btn.textContent = 'Joining…';
+    msg.textContent = '';
+
+    fetch(window.OMIA_ENDPOINT, {
+      method: 'POST',
+      // text/plain avoids a CORS preflight, which Apps Script cannot answer.
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ email: value, interests: interests, source: source, website: form.website.value })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res.ok) {
+          if (res.error === 'invalid_email') {
+            email.setAttribute('aria-invalid', 'true');
+            return fail('That email address doesn’t look right. Check it and try again.');
+          }
+          return fail('Your signup didn’t go through. Try again in a moment.');
+        }
+        document.getElementById('done-email').textContent = value;
+        if (res.status === 'already_joined') {
+          document.getElementById('done-title').textContent = 'You’re already on the waitlist.';
+        }
+        form.hidden = true;
+        done.hidden = false;
+        done.focus();
+      })
+      .catch(function () {
+        fail('Your signup didn’t go through. Check your connection and try again.');
+      });
+  });
+})();
+</script>
+</body>
+</html>
