@@ -590,6 +590,7 @@
     } else { play(); }
   });
   if (!reduce) {
+    reset(); // start on the scan view so nothing jumps when it plays
     // Play once, the first time the phone is on screen.
     if ('IntersectionObserver' in window) {
       var io = new IntersectionObserver(function (es) {
