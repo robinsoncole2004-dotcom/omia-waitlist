@@ -173,153 +173,51 @@
   .done a.follow:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
   [hidden] { display: none !important; }
 
-  /* ---------- Phone demo ---------- */
+  /* ---------- Real app capture ---------- */
   .demo { display: flex; flex-direction: column; align-items: center; padding-bottom: 8px; }
-  .phone {
+  .capture { margin: 0; width: 300px; max-width: 100%; }
+  .device {
     position: relative;
-    width: 300px;
-    height: 620px;
-    border-radius: 46px;
+    width: 100%;
+    aspect-ratio: 590 / 1278;
+    border-radius: 44px;
     background: #1C2624;
-    padding: 10px;
+    padding: 9px;
     box-shadow: 0 30px 60px -30px rgba(21,33,31,.45), 0 0 0 1px rgba(21,33,31,.08);
   }
-  .screen {
-    position: relative;
+  .device video, .device img {
+    display: block;
     width: 100%; height: 100%;
-    border-radius: 37px;
-    overflow: hidden;
+    object-fit: cover;
+    border-radius: 36px;
     background: #F5F8F8;
-    font-family: var(--sans);
   }
-  .island { position: absolute; top: 10px; left: 50%; width: 92px; height: 26px; margin-left: -46px; background: #000; border-radius: 20px; z-index: 5; }
-  .status { position: absolute; top: 14px; left: 0; right: 0; padding: 0 28px; display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; z-index: 4; color: var(--ink); transition: color .3s; }
-  .phone:not(.results) .status { color: #fff; }
-  .bars { display: flex; gap: 2px; align-items: flex-end; }
-  .bars i { display: block; width: 3px; background: currentColor; border-radius: 1px; }
-
-  /* Scan view: camera with the example portrait */
-  .view { position: absolute; inset: 0; transition: transform .6s cubic-bezier(.7,0,.2,1), opacity .4s; }
-  .v-scan { background: #121A18; color: #fff; }
-  .cam { position: absolute; left: -34px; top: -11px; width: 333px; height: 416px; }
-  .cam img, .cam svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-  .v-scan::before {
-    content: ""; position: absolute; left: 0; right: 0; top: 0; height: 110px; z-index: 1;
-    background: linear-gradient(180deg, rgba(10,16,15,.55), rgba(10,16,15,0));
+  .toggle {
+    position: absolute; right: 18px; bottom: 96px;
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 0; background: rgba(21,33,31,.72); color: #fff;
+    display: grid; place-items: center; cursor: pointer;
   }
-  .v-scan .title { position: absolute; top: 50px; left: 0; right: 0; text-align: center; font-size: 15px; font-weight: 600; z-index: 2; }
-  .v-scan .tag {
-    position: absolute; top: 74px; left: 50%; transform: translateX(-50%); z-index: 2;
-    white-space: nowrap; font-size: 10.5px; font-weight: 600;
-    padding: 3px 9px; border-radius: 99px; background: rgba(10,16,15,.45);
-  }
-  .stage { position: absolute; top: 96px; left: 50%; width: 210px; height: 270px; margin-left: -105px; z-index: 2; }
-  .guide { position: absolute; inset: 0; }
-  .guide ellipse { fill: none; stroke: rgba(255,255,255,.75); stroke-width: 2; stroke-dasharray: 5 6; transition: stroke .3s; }
-  .guide .corner { fill: none; stroke: rgba(255,255,255,.9); stroke-width: 3; stroke-linecap: round; transition: stroke .3s, transform .5s var(--spring); transform-box: fill-box; }
-  .phone.aligned .guide ellipse, .phone.aligned .guide .corner { stroke: #8FDCC9; }
-  .phone.aligned .guide .c1 { transform: translate(6px, 6px); }
-  .phone.aligned .guide .c2 { transform: translate(-6px, 6px); }
-  .phone.aligned .guide .c3 { transform: translate(6px, -6px); }
-  .phone.aligned .guide .c4 { transform: translate(-6px, -6px); }
-  .beam {
-    position: absolute; left: 22px; right: 22px; top: 18px; height: 3px;
-    border-radius: 3px;
-    background: #8FDCC9;
-    box-shadow: 0 0 18px 6px rgba(143,220,201,.55);
-    opacity: 0;
-  }
-  .phone.scanning .beam { animation: beam 1.6s cubic-bezier(.45,.05,.35,1) 1 both; }
-  @keyframes beam { 0% { top: 18px; opacity: 0; } 10%, 90% { opacity: 1; } 100% { top: 246px; opacity: 0; } }
-
-  /* Areas checked (example), drawn over the portrait */
-  .ring { fill: rgba(143,220,201,.10); stroke: #8FDCC9; stroke-width: 5; stroke-dasharray: 14 12; opacity: 0; transition: opacity .4s; }
-  .phone.mapped .ring { opacity: 1; }
-  .phone.mapped.hl-breakouts .ring.r-breakouts, .phone.mapped.hl-tone .ring.r-tone, .phone.mapped.hl-texture .ring.r-texture { stroke: #fff; stroke-dasharray: none; stroke-width: 7; fill: rgba(255,255,255,.12); }
-
-  .pill {
-    position: absolute; top: 368px; left: 50%; transform: translateX(-50%); z-index: 2;
-    white-space: nowrap;
-    background: #fff; color: var(--teal);
-    font-size: 12.5px; font-weight: 600;
-    padding: 7px 13px; border-radius: 99px;
-    display: flex; align-items: center; gap: 6px;
-    box-shadow: 0 4px 14px rgba(0,0,0,.18);
-  }
-  .pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #C9CFC9; transition: background .3s; }
-  .phone.aligned .pill::before { background: var(--teal-bright); }
-  .checks { position: absolute; top: 424px; left: 0; right: 0; display: flex; justify-content: center; gap: 5px; }
-  .checks span {
-    font-size: 11px; font-weight: 600; white-space: nowrap;
-    padding: 5px 8px; border-radius: 99px;
-    background: rgba(255,255,255,.12);
-    display: flex; align-items: center; gap: 4px;
-    opacity: .6;
-    transition: opacity .3s, background-color .3s;
-  }
-  .checks span svg { width: 10px; height: 10px; opacity: 0; transform: scale(0); transition: transform .3s var(--spring), opacity .2s; }
-  .checks span.on { opacity: 1; background: rgba(20,163,148,.85); }
-  .checks span.on svg { opacity: 1; transform: scale(1); }
-  .progress { position: absolute; top: 466px; left: 34px; right: 34px; }
-  .progress .track { height: 4px; border-radius: 4px; background: rgba(255,255,255,.2); overflow: hidden; }
-  .progress .fill { height: 100%; width: 0; background: #8FDCC9; border-radius: 4px; }
-  .phone.scanning .progress .fill { transition: width 1.6s linear; width: 100%; }
-  .progress p { margin: 7px 0 0; font-size: 11px; text-align: center; opacity: .9; }
-  .shutter { position: absolute; bottom: 26px; left: 50%; width: 58px; height: 58px; margin-left: -29px; border-radius: 50%; border: 3px solid rgba(255,255,255,.85); }
-  .shutter::after { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: #fff; transition: transform .2s; }
-  .phone.snap .shutter::after { transform: scale(.82); }
-
-  /* Results view */
-  .v-res { transform: translateX(100%); padding: 50px 14px 14px; color: var(--ink); background: #F5F8F8; }
-  .phone.results .v-res { transform: translateX(0); }
-  .phone.results .v-scan { transform: translateX(-30%); opacity: 0; }
-  .v-res .top { display: flex; justify-content: center; font-size: 15px; font-weight: 600; margin-bottom: 12px; position: relative; }
-  .v-res .top::before { content: "‹"; position: absolute; left: 4px; top: -3px; font-size: 22px; font-weight: 400; color: var(--ink-soft); }
-  .start {
-    display: flex; gap: 10px; align-items: center;
-    background: var(--teal); color: #fff;
-    border-radius: 14px; padding: 11px 12px;
-    margin-bottom: 12px;
-  }
-  .start .who { width: 46px; height: 46px; border-radius: 12px; flex: none; background: url(img/example-portrait.jpg) 50% 52% / 210% auto no-repeat; box-shadow: 0 0 0 2px rgba(255,255,255,.5); }
-  .start small { display: block; font-size: 10.5px; opacity: .85; }
-  .start b { display: block; font-size: 15px; line-height: 1.25; }
-  .start p { margin: 2px 0 0; font-size: 10.5px; opacity: .9; line-height: 1.3; }
-  .v-res h3 { font-size: 12.5px; margin: 0 0 6px; }
-  .row {
-    display: flex; align-items: center; gap: 10px;
-    background: #fff; border-radius: 12px; padding: 8px 10px; margin-bottom: 6px;
-    box-shadow: 0 0 0 1px rgba(18,40,36,.07);
-    transition: box-shadow .3s, transform .3s var(--spring);
-  }
-  .row .ri { width: 28px; height: 28px; border-radius: 8px; background: var(--teal-soft); display: grid; place-items: center; flex: none; }
-  .row .ri svg { width: 18px; height: 18px; }
-  .row b { display: block; font-size: 12.5px; }
-  .row small { display: block; font-size: 10.5px; color: #5F706D; }
-  .row .txt { flex: 1; min-width: 0; }
-  .row .flag { flex: none; font-size: 10px; font-weight: 700; color: var(--teal); background: var(--teal-soft); padding: 3px 7px; border-radius: 99px; }
-  .phone.hl-breakouts .row.k-breakouts, .phone.hl-tone .row.k-tone, .phone.hl-texture .row.k-texture { box-shadow: 0 0 0 2px var(--teal-bright); transform: scale(1.02); }
-  .timeline { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
-  .slot { min-width: 0; text-align: center; font-size: 10.5px; color: #5F706D; line-height: 1.25; }
-  .slot .pic { height: 70px; border-radius: 10px; margin-bottom: 4px; }
-  .slot.now .pic { background: url(img/example-portrait.jpg) 50% 50% / 150% auto no-repeat; box-shadow: 0 0 0 2px var(--teal-bright); }
-  .slot.now { color: var(--teal); font-weight: 600; }
-  .slot.next .pic { border: 1.5px dashed #AEBBB8; display: grid; place-items: center; color: #8A9895; font-size: 18px; }
-  .v-res .note { position: absolute; left: 14px; right: 14px; bottom: 18px; font-size: 10.5px; color: #6F7E7B; text-align: center; }
-
-  .demo-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 300px; margin-top: 14px; }
-  .demo-foot p { margin: 0; font-size: 13.5px; color: var(--ink-soft); line-height: 1.4; }
-  .replay {
-    flex: none;
-    font: 600 14px/1 var(--sans);
-    color: var(--teal);
-    background: transparent;
-    border: 1.5px solid var(--teal);
-    border-radius: 99px;
-    padding: 10px 14px;
+  .toggle:focus-visible { outline: 3px solid var(--teal-bright); outline-offset: 2px; }
+  .toggle svg { width: 16px; height: 16px; }
+  .chapters { list-style: none; margin: 16px 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .chapters button {
+    width: 100%; height: 100%;
+    text-align: left;
+    font: inherit;
+    color: var(--ink);
+    background: var(--white);
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    padding: 10px 12px;
     cursor: pointer;
+    transition: border-color .2s, background-color .2s;
   }
-  .replay:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .chapters button b { display: block; font-size: 14px; line-height: 1.25; }
+  .chapters button span { display: block; font-size: 12.5px; color: var(--ink-soft); line-height: 1.3; margin-top: 2px; }
+  .chapters button[aria-current="true"] { border-color: var(--teal); background: var(--teal-soft); }
+  .chapters button:focus-visible { outline: 3px solid rgba(11,118,106,.45); outline-offset: 2px; }
+  .capture figcaption { margin-top: 12px; font-size: 13px; line-height: 1.45; color: var(--ink-soft); }
 
   footer {
     width: 100%;
@@ -343,7 +241,7 @@
     @keyframes ripple { 0% { transform: scale(1); } 45% { transform: scale(1.9); } 100% { transform: scale(1); } }
   }
   @media (prefers-reduced-motion: reduce) {
-    .view, .tile .face, .tile .tick, .guide .corner, .row { transition: none !important; }
+    .tile .face, .tile .tick { transition: none !important; }
   }
 
   @media (min-width: 900px) {
@@ -433,79 +331,23 @@
     </div>
   </section>
 
-  <section class="demo" aria-label="Example of an Omia scan">
-    <div class="phone results" id="phone" role="img" aria-label="Example Omia scan using an AI-generated portrait: the face is lined up in an oval guide and scanned, then the app suggests starting with breakouts and leaves space for later scans to compare.">
-      <div class="screen">
-        <div class="island"></div>
-        <div class="status"><span>9:41</span><span class="bars"><i style="height:5px"></i><i style="height:7px"></i><i style="height:9px"></i><i style="height:11px"></i></span></div>
-
-        <div class="view v-scan">
-          <div class="cam">
-            <img src="img/example-portrait.jpg" width="760" height="949" alt="" decoding="async">
-            <svg viewBox="0 0 1122 1402" preserveAspectRatio="none" aria-hidden="true">
-              <ellipse class="ring r-breakouts" cx="575" cy="560" rx="125" ry="58"/>
-              <ellipse class="ring r-breakouts" cx="580" cy="1062" rx="95" ry="46"/>
-              <ellipse class="ring r-tone" cx="452" cy="850" rx="78" ry="78"/>
-              <ellipse class="ring r-tone" cx="718" cy="845" rx="74" ry="78"/>
-              <ellipse class="ring r-texture" cx="586" cy="815" rx="44" ry="80"/>
-            </svg>
-          </div>
-          <div class="title">Skin scan</div>
-          <div class="tag">Example, AI-generated portrait</div>
-          <div class="stage">
-            <svg class="guide" viewBox="0 0 210 270">
-              <ellipse cx="105" cy="128" rx="78" ry="104"/>
-              <path class="corner c1" d="M8 34V8h26"/>
-              <path class="corner c2" d="M176 8h26v26"/>
-              <path class="corner c3" d="M8 236v26h26"/>
-              <path class="corner c4" d="M176 262h26v-26"/>
-            </svg>
-            <div class="beam"></div>
-          </div>
-          <div class="pill" id="pill">Center your face in the oval</div>
-          <div class="checks" id="checks">
-            <span><svg viewBox="0 0 12 12"><path d="M2.5 6.5l2.3 2.3L9.5 3.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>Even light</span>
-            <span><svg viewBox="0 0 12 12"><path d="M2.5 6.5l2.3 2.3L9.5 3.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>Centered</span>
-            <span><svg viewBox="0 0 12 12"><path d="M2.5 6.5l2.3 2.3L9.5 3.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>Straight on</span>
-          </div>
-          <div class="progress"><div class="track"><div class="fill"></div></div><p id="ptext">Ready to scan</p></div>
-          <div class="shutter"></div>
-        </div>
-
-        <div class="view v-res">
-          <div class="top">Example scan</div>
-          <div class="start">
-            <span class="who" aria-hidden="true"></span>
-            <span><small>Where to start</small><b>Breakouts</b><p>Most visible on the forehead and chin in this example.</p></span>
-          </div>
-          <h3>Checked in this scan</h3>
-          <div class="row k-breakouts">
-            <span class="ri"><svg viewBox="0 0 20 20"><circle cx="7" cy="7" r="2" fill="#0B766A"/><circle cx="13" cy="9" r="1.6" fill="#0B766A"/><circle cx="9" cy="14" r="2.2" fill="#0B766A"/></svg></span>
-            <span class="txt"><b>Breakouts</b><small>Forehead and chin</small></span>
-            <span class="flag">Start here</span>
-          </div>
-          <div class="row k-tone">
-            <span class="ri"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#0B766A" stroke-width="1.6"/><path d="M10 3a7 7 0 0 1 0 14z" fill="#0B766A"/></svg></span>
-            <span class="txt"><b>Uneven tone</b><small>Cheeks</small></span>
-          </div>
-          <div class="row k-texture">
-            <span class="ri"><svg viewBox="0 0 20 20"><g fill="#0B766A"><circle cx="5" cy="5" r="1.3"/><circle cx="10" cy="5" r="1.3"/><circle cx="15" cy="5" r="1.3"/><circle cx="5" cy="10" r="1.3"/><circle cx="10" cy="10" r="1.3"/><circle cx="15" cy="10" r="1.3"/><circle cx="5" cy="15" r="1.3"/><circle cx="10" cy="15" r="1.3"/><circle cx="15" cy="15" r="1.3"/></g></svg></span>
-            <span class="txt"><b>Texture</b><small>Nose and cheeks</small></span>
-          </div>
-          <h3 style="margin-top:12px">See what changes</h3>
-          <div class="timeline" style="margin-top:0">
-            <div class="slot now"><div class="pic"></div>Scan 1<br>Today</div>
-            <div class="slot next"><div class="pic">+</div>Scan 2<br>Your next scan</div>
-            <div class="slot next"><div class="pic">+</div>Scan 3<br>Weeks later</div>
-          </div>
-          <div class="note">Example with an AI-generated portrait</div>
-        </div>
+  <section class="demo" aria-labelledby="capture-title">
+    <figure class="capture">
+      <h2 id="capture-title" hidden>Omia app screen recording</h2>
+      <div class="device">
+        <video id="appvid" muted loop playsinline preload="metadata" poster="media/omia-home.jpg" aria-label="Screen recording of the Omia app: the Home screen with the latest breakdown and today's routine, then the Progress screen showing the skin journey for each score.">
+          <source src="media/omia-app.mp4" type="video/mp4">
+        </video>
+        <button type="button" class="toggle" id="toggle" aria-label="Pause video">
+          <svg viewBox="0 0 16 16" aria-hidden="true" id="toggle-ico"><rect x="3" y="2" width="3.5" height="12" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="3.5" height="12" rx="1" fill="currentColor"/></svg>
+        </button>
       </div>
-    </div>
-    <div class="demo-foot">
-      <p>Example scan. The portrait is AI-generated, and the findings are for illustration, not real results.</p>
-      <button type="button" class="replay" id="replay">Play scan</button>
-    </div>
+      <ol class="chapters">
+        <li><button type="button" data-t="0" aria-current="true"><b>Where to start</b><span>Home: latest breakdown and today's routine</span></button></li>
+        <li><button type="button" data-t="11.3" aria-current="false"><b>See what changes</b><span>Progress: your skin journey, score by score</span></button></li>
+      </ol>
+      <figcaption>Real screen recording of the Omia app from an earlier test build (November 2026). The scores are the app's built-in sample data, not a real person's results. Scan screens aren't shown.</figcaption>
+    </figure>
   </section>
 </main>
 
@@ -527,59 +369,53 @@
     g.appendChild(c);
   });
 
-  /* ---------- Choice tiles: haptics + phone highlight ---------- */
-  var phone = document.getElementById('phone');
+  /* ---------- Choice tiles: haptics ---------- */
   document.querySelectorAll('.tile input').forEach(function (box) {
     box.addEventListener('change', function () {
-      phone.classList.toggle('hl-' + box.dataset.k, box.checked);
       if (box.checked && navigator.vibrate) { try { navigator.vibrate(12); } catch (e) {} }
     });
   });
 
-  /* ---------- Scan demo timeline ---------- */
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var pill = document.getElementById('pill');
-  var ptext = document.getElementById('ptext');
-  var checks = document.querySelectorAll('#checks span');
-  var timers = [];
-  function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
-  function reset() {
-    timers.forEach(clearTimeout); timers = [];
-    phone.classList.remove('aligned', 'scanning', 'mapped', 'results', 'snap');
-    checks.forEach(function (c) { c.classList.remove('on'); });
-    pill.textContent = 'Center your face in the oval';
-    ptext.textContent = 'Ready to scan';
+  /* ---------- Real app capture: chapters + pause ---------- */
+  var vid = document.getElementById('appvid');
+  var toggle = document.getElementById('toggle');
+  var ico = document.getElementById('toggle-ico');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapters button'));
+  var PAUSE = '<rect x="3" y="2" width="3.5" height="12" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="3.5" height="12" rx="1" fill="currentColor"/>';
+  var PLAY = '<path d="M4 2.5v11l9-5.5z" fill="currentColor"/>';
+  function syncToggle() {
+    var paused = vid.paused;
+    ico.innerHTML = paused ? PLAY : PAUSE;
+    toggle.setAttribute('aria-label', paused ? 'Play video' : 'Pause video');
   }
-  function play() {
-    reset();
-    void phone.offsetWidth; // restart CSS transitions
-    at(700, function () { phone.classList.add('aligned'); pill.textContent = 'Hold still'; });
-    at(1100, function () { checks[0].classList.add('on'); });
-    at(1450, function () { checks[1].classList.add('on'); });
-    at(1800, function () { checks[2].classList.add('on'); });
-    at(2300, function () { phone.classList.add('snap', 'scanning'); ptext.textContent = 'Checking breakouts, tone and texture'; });
-    at(2500, function () { phone.classList.remove('snap'); });
-    at(3100, function () { phone.classList.add('mapped'); });
-    at(4000, function () { pill.textContent = 'Scan complete'; ptext.textContent = 'Finding where to start'; });
-    at(5400, function () { phone.classList.add('results'); });
+  function syncChapter() {
+    var t = vid.currentTime, cur = 0;
+    chapters.forEach(function (b, i) { if (t >= parseFloat(b.dataset.t) - 0.05) cur = i; });
+    chapters.forEach(function (b, i) { b.setAttribute('aria-current', i === cur ? 'true' : 'false'); });
   }
-  document.getElementById('replay').addEventListener('click', function () {
-    if (reduce) {
-      reset(); phone.classList.add('aligned', 'mapped');
-      checks.forEach(function (c) { c.classList.add('on'); });
-      pill.textContent = 'Scan complete';
-      at(2500, function () { phone.classList.add('results'); });
-    } else { play(); }
+  toggle.addEventListener('click', function () { if (vid.paused) vid.play(); else vid.pause(); });
+  vid.addEventListener('play', syncToggle);
+  vid.addEventListener('pause', syncToggle);
+  vid.addEventListener('timeupdate', syncChapter);
+  vid.addEventListener('seeked', syncChapter);
+  chapters.forEach(function (b) {
+    b.addEventListener('click', function () {
+      vid.currentTime = parseFloat(b.dataset.t);
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) vid.play();
+      syncChapter();
+    });
   });
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!reduce) {
-    reset(); // start on the scan view so nothing jumps when it plays
+    // Autoplay muted once the recording is on screen; stays paused for reduced motion.
     if ('IntersectionObserver' in window) {
       var io = new IntersectionObserver(function (es) {
-        if (es[0].isIntersecting) { io.disconnect(); play(); }
-      }, { threshold: 0.45 });
-      io.observe(phone);
-    } else { play(); }
+        if (es[0].isIntersecting) { io.disconnect(); var p = vid.play(); if (p && p.catch) p.catch(syncToggle); }
+      }, { threshold: 0.35 });
+      io.observe(vid);
+    } else { vid.play(); }
   }
+  syncToggle();
 
   /* ---------- Signup (unchanged setup) ---------- */
   var form = document.getElementById('signup');
