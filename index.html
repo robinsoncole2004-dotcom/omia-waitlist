@@ -15,14 +15,20 @@
     --paper: #F5F4ED;
     --ink: #15211F;
     --ink-soft: #4A5654;
+    --ink-faint: #8A9895;
     --teal: #0B766A;
     --teal-deep: #075A51;
+    --teal-bright: #14A394;
+    --teal-soft: #E1F1EE;
     --mint: #D6E9E2;
+    --line: #D9DED9;
     --white: #FFFFFF;
+    --spot: #DF8A78;
     --error: #A3392B;
     --serif: Georgia, "Times New Roman", serif;
     --sans: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     --edge: clamp(20px, 6vw, 72px);
+    --spring: cubic-bezier(.34, 1.56, .64, 1);
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
@@ -60,13 +66,9 @@
     margin: 0 0 14px;
     max-width: 11ch;
   }
-  .lede {
-    margin: 0 0 24px;
-    max-width: 34em;
-    color: var(--ink-soft);
-  }
+  .lede { margin: 0 0 24px; max-width: 34em; color: var(--ink-soft); }
 
-  /* Form */
+  /* ---------- Form ---------- */
   form { max-width: 440px; }
   label.field { display: block; font-weight: 600; font-size: 15px; margin-bottom: 8px; }
   input[type=email] {
@@ -81,25 +83,61 @@
   }
   input[type=email]:focus-visible { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(11,118,106,.22); }
   input[aria-invalid=true] { border-color: var(--error); }
-  fieldset { border: 0; padding: 0; margin: 20px 0 22px; }
+  fieldset { border: 0; padding: 0; margin: 22px 0 22px; min-width: 0; }
   legend { font-size: 15px; font-weight: 600; padding: 0; margin-bottom: 10px; }
   legend span { font-weight: 400; color: var(--ink-soft); }
-  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .chip input { position: absolute; opacity: 0; pointer-events: none; }
-  .chip span {
-    display: inline-block;
-    padding: 10px 16px;
-    border: 1.5px solid var(--teal);
-    border-radius: 999px;
-    color: var(--teal);
-    font-size: 15px;
-    cursor: pointer;
+
+  /* Choice tiles */
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .tile { position: relative; display: block; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .tile input { position: absolute; opacity: 0; pointer-events: none; }
+  .tile .face {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 6px 12px;
+    background: var(--white);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.2;
     user-select: none;
-    -webkit-tap-highlight-color: transparent;
+    transition: transform .18s var(--spring), border-color .2s, background-color .2s, box-shadow .2s;
   }
-  .chip input:checked + span { background: var(--teal); color: var(--paper); }
-  .chip input:focus-visible + span { outline: 3px solid rgba(11,118,106,.35); outline-offset: 2px; }
-  button {
+  .tile:active .face { transform: scale(.94); }
+  .tile input:checked + .face {
+    border-color: var(--teal);
+    background: var(--teal-soft);
+    box-shadow: 0 0 0 1px var(--teal) inset;
+  }
+  .tile input:focus-visible + .face { outline: 3px solid rgba(11,118,106,.45); outline-offset: 2px; }
+  .tile svg.ico { width: 44px; height: 44px; overflow: visible; }
+  .tile .tick {
+    position: absolute;
+    top: -7px; right: -7px;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--teal);
+    display: grid; place-items: center;
+    transform: scale(0);
+    transition: transform .32s var(--spring);
+    pointer-events: none;
+  }
+  .tile input:checked ~ .tick { transform: scale(1); }
+  .tile .tick svg { width: 13px; height: 13px; }
+
+  /* Icon idle + checked states */
+  .ico .spot { fill: #C9CFC9; transform-box: fill-box; transform-origin: center; transition: fill .2s; }
+  .ico .halfshade { transform-origin: 22px 22px; transition: fill .2s; fill: #D0B49C; }
+  .ico .grain { fill: #B9C2BF; transform-box: fill-box; transform-origin: center; }
+  .tile input:checked + .face .spot { fill: var(--spot); }
+  .tile input:checked + .face .halfshade { fill: #C99A76; }
+  .tile input:checked + .face .grain { fill: var(--teal); }
+
+  button.join {
     width: 100%;
     font: 600 18px/1 var(--sans);
     color: var(--paper);
@@ -108,10 +146,12 @@
     border-radius: 12px;
     padding: 18px;
     cursor: pointer;
+    transition: transform .15s var(--spring), background-color .2s;
   }
-  button:hover { background: var(--teal-deep); }
-  button:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
-  button[disabled] { opacity: .7; cursor: progress; }
+  button.join:hover { background: var(--teal-deep); }
+  button.join:active { transform: scale(.98); }
+  button.join:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  button.join[disabled] { opacity: .7; cursor: progress; }
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
   .msg:empty { display: none; }
   .msg { margin: 12px 0 0; font-size: 15px; color: var(--error); }
@@ -133,43 +173,143 @@
   .done a.follow:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
   [hidden] { display: none !important; }
 
-  /* Scan strip: the one memorable element */
-  .scans { padding-bottom: 8px; }
-  .strip {
-    display: grid;
-    grid-template-columns: 1fr 14px 1fr 14px 1fr;
-    align-items: center;
-  }
-  .link { height: 1.5px; background: var(--teal); opacity: .6; }
-  .frame {
+  /* ---------- Phone demo ---------- */
+  .demo { display: flex; flex-direction: column; align-items: center; padding-bottom: 8px; }
+  .phone {
     position: relative;
-    aspect-ratio: 3 / 4;
-    background: var(--white);
-    border-radius: 14px;
-    padding: 6px;
+    width: 300px;
+    height: 620px;
+    border-radius: 46px;
+    background: #1C2624;
+    padding: 10px;
+    box-shadow: 0 30px 60px -30px rgba(21,33,31,.45), 0 0 0 1px rgba(21,33,31,.08);
   }
-  .frame .well {
+  .screen {
     position: relative;
-    height: 100%;
-    border-radius: 9px;
-    background-color: var(--mint);
-    background-image: radial-gradient(circle, rgba(11,118,106,.28) 1.2px, transparent 1.6px);
-    background-size: 12px 12px;
-    background-position: 6px 6px;
+    width: 100%; height: 100%;
+    border-radius: 37px;
     overflow: hidden;
+    background: #F5F8F8;
+    font-family: var(--sans);
   }
-  .sweep {
-    position: absolute;
-    left: 0; right: 0; top: 0;
-    height: 2px;
-    background: var(--teal);
-    box-shadow: 0 0 14px 3px rgba(11,118,106,.35);
+  .island { position: absolute; top: 10px; left: 50%; width: 92px; height: 26px; margin-left: -46px; background: #000; border-radius: 20px; z-index: 5; }
+  .status { position: absolute; top: 14px; left: 0; right: 0; padding: 0 28px; display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; z-index: 4; }
+  .bars { display: flex; gap: 2px; align-items: flex-end; }
+  .bars i { display: block; width: 3px; background: currentColor; border-radius: 1px; }
+
+  /* Scan view */
+  .view { position: absolute; inset: 0; transition: transform .6s cubic-bezier(.7,0,.2,1), opacity .4s; }
+  .v-scan { background: linear-gradient(180deg, #A9B7B4 0%, #8C9C99 100%); color: #fff; }
+  .v-scan .title { position: absolute; top: 54px; left: 0; right: 0; text-align: center; font-size: 15px; font-weight: 600; }
+  .stage { position: absolute; top: 96px; left: 50%; width: 210px; height: 270px; margin-left: -105px; }
+  .stage .avatar { position: absolute; left: 15px; top: 12px; width: 180px; height: 216px; }
+  .guide { position: absolute; inset: 0; }
+  .guide ellipse { fill: none; stroke: rgba(255,255,255,.7); stroke-width: 2; stroke-dasharray: 5 6; transition: stroke .3s; }
+  .guide .corner { fill: none; stroke: rgba(255,255,255,.85); stroke-width: 3; stroke-linecap: round; transition: stroke .3s, transform .5s var(--spring); transform-box: fill-box; }
+  .phone.aligned .guide ellipse, .phone.aligned .guide .corner { stroke: #8FDCC9; }
+  .phone.aligned .guide .c1 { transform: translate(6px, 6px); }
+  .phone.aligned .guide .c2 { transform: translate(-6px, 6px); }
+  .phone.aligned .guide .c3 { transform: translate(6px, -6px); }
+  .phone.aligned .guide .c4 { transform: translate(-6px, -6px); }
+  .beam {
+    position: absolute; left: 22px; right: 22px; top: 18px; height: 3px;
+    border-radius: 3px;
+    background: #8FDCC9;
+    box-shadow: 0 0 18px 6px rgba(143,220,201,.55);
     opacity: 0;
   }
-  .caps { display: grid; grid-template-columns: 1fr 14px 1fr 14px 1fr; margin-top: 10px; }
-  .caps span { text-align: center; font-size: 14px; }
-  .caps span:nth-child(even) { visibility: hidden; }
-  .scans p { margin: 16px 0 0; font-size: 15px; color: var(--ink-soft); max-width: 30em; }
+  .phone.scanning .beam { animation: beam 1.6s cubic-bezier(.45,.05,.35,1) 1 both; }
+  @keyframes beam { 0% { top: 18px; opacity: 0; } 10%, 90% { opacity: 1; } 100% { top: 246px; opacity: 0; } }
+  .pill {
+    position: absolute; top: 382px; left: 50%; transform: translateX(-50%);
+    white-space: nowrap;
+    background: #fff; color: var(--teal);
+    font-size: 12.5px; font-weight: 600;
+    padding: 7px 13px; border-radius: 99px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #C9CFC9; transition: background .3s; }
+  .phone.aligned .pill::before { background: var(--teal-bright); }
+  .checks { position: absolute; top: 428px; left: 0; right: 0; display: flex; justify-content: center; gap: 6px; }
+  .checks span {
+    font-size: 11.5px; font-weight: 600; white-space: nowrap;
+    padding: 5px 10px; border-radius: 99px;
+    background: rgba(21,33,31,.28);
+    display: flex; align-items: center; gap: 4px;
+    opacity: .55;
+    transition: opacity .3s, background-color .3s;
+  }
+  .checks span svg { width: 10px; height: 10px; opacity: 0; transform: scale(0); transition: transform .3s var(--spring), opacity .2s; }
+  .checks span.on { opacity: 1; background: rgba(11,118,106,.75); }
+  .checks span.on svg { opacity: 1; transform: scale(1); }
+  .progress { position: absolute; top: 472px; left: 34px; right: 34px; }
+  .progress .track { height: 4px; border-radius: 4px; background: rgba(255,255,255,.3); overflow: hidden; }
+  .progress .fill { height: 100%; width: 0; background: #8FDCC9; border-radius: 4px; }
+  .phone.scanning .progress .fill { transition: width 1.6s linear; width: 100%; }
+  .progress p { margin: 6px 0 0; font-size: 11px; text-align: center; opacity: .9; }
+  .shutter { position: absolute; bottom: 30px; left: 50%; width: 62px; height: 62px; margin-left: -31px; border-radius: 50%; border: 3px solid rgba(255,255,255,.85); }
+  .shutter::after { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: #fff; transition: transform .2s; }
+  .phone.snap .shutter::after { transform: scale(.82); }
+
+  /* Avatar zones: hidden until mapped or chosen */
+  .zone { opacity: 0; transition: opacity .5s; }
+  .phone.mapped .zone { opacity: 1; }
+  .ring { fill: none; stroke: #8FDCC9; stroke-width: 1.6; stroke-dasharray: 3 3; opacity: 0; transition: opacity .4s; }
+  .phone.mapped .ring { opacity: .9; }
+  .phone.mapped.hl-breakouts .ring.r-breakouts, .phone.mapped.hl-tone .ring.r-tone, .phone.mapped.hl-texture .ring.r-texture { stroke: #fff; stroke-dasharray: none; stroke-width: 2.2; opacity: 1; }
+
+  /* Results view */
+  .v-res { transform: translateX(100%); padding: 52px 16px 16px; color: var(--ink); background: #F5F8F8; }
+  .phone.results .v-res { transform: translateX(0); }
+  .phone.results .v-scan { transform: translateX(-30%); opacity: 0; }
+  .v-res .top { display: flex; justify-content: center; font-size: 15px; font-weight: 600; margin-bottom: 14px; position: relative; }
+  .v-res .top::before { content: "‹"; position: absolute; left: 2px; top: -3px; font-size: 22px; font-weight: 400; color: var(--ink-soft); }
+  .thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+  .thumb { min-width: 0; text-align: center; font-size: 11px; color: #5F706D; }
+  .thumb .pic { height: 104px; border-radius: 12px; background: linear-gradient(180deg, #B4C2BF, #98A8A5); overflow: hidden; display: flex; justify-content: center; align-items: flex-end; margin-bottom: 5px; }
+  .thumb .pic svg { width: 100%; max-width: 84px; height: 100px; }
+  .thumb.now .pic { box-shadow: 0 0 0 2px var(--teal-bright); }
+  .thumb.now { color: var(--teal); font-weight: 600; }
+  .v-res h3 { font-size: 13px; margin: 0 0 8px; }
+  .row {
+    display: flex; align-items: center; gap: 10px;
+    background: #fff; border-radius: 14px; padding: 10px 11px; margin-bottom: 8px;
+    box-shadow: 0 0 0 1px rgba(18,40,36,.07);
+    transition: box-shadow .3s, transform .3s var(--spring);
+  }
+  .row .ri { width: 32px; height: 32px; border-radius: 9px; background: var(--teal-soft); display: grid; place-items: center; flex: none; }
+  .row .ri svg { width: 20px; height: 20px; }
+  .row b { display: block; font-size: 13px; }
+  .row small { display: block; font-size: 10.5px; color: #5F706D; }
+  .row .txt { flex: 1; min-width: 0; }
+  .dots3 { display: flex; align-items: center; flex: none; }
+  .dots3 i { width: 8px; height: 8px; border-radius: 50%; background: #9BD5C8; }
+  .dots3 i:last-child { background: var(--teal); }
+  .dots3 em { width: 10px; height: 1.5px; background: #9BD5C8; }
+  .phone.hl-breakouts .row.k-breakouts, .phone.hl-tone .row.k-tone, .phone.hl-texture .row.k-texture { box-shadow: 0 0 0 2px var(--teal-bright); transform: scale(1.02); }
+  .start {
+    margin-top: 14px;
+    background: var(--teal); color: #fff;
+    border-radius: 14px; padding: 12px 14px;
+  }
+  .start small { display: block; font-size: 10.5px; opacity: .8; margin-bottom: 2px; }
+  .start b { font-size: 14px; }
+  .start p { margin: 3px 0 0; font-size: 11px; opacity: .85; line-height: 1.35; }
+  .v-res .note { position: absolute; left: 16px; right: 16px; bottom: 22px; font-size: 10.5px; color: #8A9895; text-align: center; }
+
+  .demo-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 300px; margin-top: 14px; }
+  .demo-foot p { margin: 0; font-size: 14px; color: var(--ink-soft); line-height: 1.4; }
+  .replay {
+    flex: none;
+    font: 600 14px/1 var(--sans);
+    color: var(--teal);
+    background: transparent;
+    border: 1.5px solid var(--teal);
+    border-radius: 99px;
+    padding: 10px 14px;
+    cursor: pointer;
+  }
+  .replay:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
 
   footer {
     width: 100%;
@@ -180,14 +320,20 @@
   }
   footer a { color: var(--teal); }
 
+  /* Tap feedback animations (only when motion is welcome) */
   @media (prefers-reduced-motion: no-preference) {
-    .sweep { animation: sweep 1.8s cubic-bezier(.45,.05,.35,1) .5s 1 both; }
-    @keyframes sweep {
-      0% { top: 0; opacity: 0; }
-      8% { opacity: 1; }
-      92% { opacity: 1; }
-      100% { top: calc(100% - 2px); opacity: 0; }
-    }
+    .tile input:checked + .face .spot { animation: pop .42s var(--spring) both; }
+    .tile input:checked + .face .spot:nth-of-type(2) { animation-delay: .07s; }
+    .tile input:checked + .face .spot:nth-of-type(3) { animation-delay: .14s; }
+    .tile input:checked + .face .spot:nth-of-type(4) { animation-delay: .21s; }
+    .tile input:checked + .face .halfshade { animation: spin .6s cubic-bezier(.5,0,.2,1) both; }
+    .tile input:checked + .face .grain { animation: ripple .5s ease-out both; animation-delay: calc(var(--d) * 45ms); }
+    @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+    @keyframes spin { 0% { transform: rotate(0); } 100% { transform: rotate(180deg); } }
+    @keyframes ripple { 0% { transform: scale(1); } 45% { transform: scale(1.9); } 100% { transform: scale(1); } }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .view, .tile .face, .tile .tick, .guide .corner, .row { transition: none !important; }
   }
 
   @media (min-width: 900px) {
@@ -199,11 +345,41 @@
       padding-top: 32px;
     }
     .brand { grid-column: 1 / -1; align-self: start; }
-    .scans { padding-bottom: 0; }
+    .demo { padding-bottom: 0; }
+  }
+  @media (max-width: 340px) {
+    .tiles { gap: 7px; }
+    .tile .face { font-size: 13px; }
   }
 </style>
 </head>
 <body>
+
+<!-- Synthetic illustrated avatar (not a real person), reused in the demo -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <pattern id="grainPat" width="5" height="5" patternUnits="userSpaceOnUse">
+      <circle cx="2.5" cy="2.5" r=".9" fill="#A9775A"/>
+    </pattern>
+    <symbol id="avatar" viewBox="0 0 200 240">
+      <path d="M26 240c6-40 36-58 74-58s68 18 74 58z" fill="#2F6F66"/>
+      <path d="M86 150h28v38c-8 6-20 6-28 0z" fill="#D7A985"/>
+      <ellipse cx="100" cy="96" rx="64" ry="74" fill="#3A2A22"/>
+      <ellipse cx="51" cy="106" rx="8" ry="12" fill="#E3B693"/>
+      <ellipse cx="149" cy="106" rx="8" ry="12" fill="#E3B693"/>
+      <ellipse cx="100" cy="104" rx="50" ry="60" fill="#E9C2A0"/>
+      <path d="M48 98c0-40 26-62 56-62 30 0 50 22 50 56-14-18-34-28-58-28-20 0-36 12-48 34z" fill="#3A2A22"/>
+      <ellipse cx="76" cy="128" rx="11" ry="7" fill="#E7A88E" opacity=".45"/>
+      <ellipse cx="124" cy="128" rx="11" ry="7" fill="#E7A88E" opacity=".45"/>
+      <path d="M72 96q10-5 19 0M109 96q9-5 19 0" stroke="#3A2A22" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="82" cy="108" rx="4" ry="4.6" fill="#2A1E19"/>
+      <ellipse cx="118" cy="108" rx="4" ry="4.6" fill="#2A1E19"/>
+      <path d="M100 112q-5 14 1 18" stroke="#C48E6E" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path d="M89 141q11 8 22 0" stroke="#B5675A" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
 <main class="page">
   <a class="brand" href="https://www.instagram.com/omiaskin/">Omia</a>
 
@@ -216,17 +392,51 @@
       <input id="email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="you@example.com" required aria-describedby="msg">
 
       <fieldset>
-        <legend>What do you want to keep an eye on? <span>Optional</span></legend>
-        <div class="chips">
-          <label class="chip"><input type="checkbox" name="interests" value="Breakouts"><span>Breakouts</span></label>
-          <label class="chip"><input type="checkbox" name="interests" value="Uneven tone"><span>Uneven tone</span></label>
-          <label class="chip"><input type="checkbox" name="interests" value="Texture"><span>Texture</span></label>
+        <legend>What do you want to keep an eye on? <span>Pick any</span></legend>
+        <div class="tiles">
+          <label class="tile">
+            <input type="checkbox" name="interests" value="Breakouts" data-k="breakouts">
+            <span class="face">
+              <svg class="ico" viewBox="0 0 44 44" aria-hidden="true">
+                <circle cx="22" cy="22" r="18" fill="#F3E3D3"/>
+                <circle class="spot" cx="15" cy="16" r="3"/>
+                <circle class="spot" cx="28" cy="14" r="2.4"/>
+                <circle class="spot" cx="25" cy="27" r="3.2"/>
+                <circle class="spot" cx="14" cy="29" r="2.2"/>
+              </svg>
+              Breakouts
+            </span>
+            <span class="tick" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M2.5 6.5l2.3 2.3L9.5 3.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </label>
+          <label class="tile">
+            <input type="checkbox" name="interests" value="Uneven tone" data-k="tone">
+            <span class="face">
+              <svg class="ico" viewBox="0 0 44 44" aria-hidden="true">
+                <circle cx="22" cy="22" r="18" fill="#F0D6BF"/>
+                <path class="halfshade" d="M22 4a18 18 0 0 1 0 36z"/>
+                <circle cx="22" cy="22" r="18" fill="none" stroke="#E2C2A6" stroke-width="1"/>
+              </svg>
+              Uneven tone
+            </span>
+            <span class="tick" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M2.5 6.5l2.3 2.3L9.5 3.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </label>
+          <label class="tile">
+            <input type="checkbox" name="interests" value="Texture" data-k="texture">
+            <span class="face">
+              <svg class="ico" viewBox="0 0 44 44" aria-hidden="true">
+                <circle cx="22" cy="22" r="18" fill="#F3E3D3"/>
+                <g id="grainDots"></g>
+              </svg>
+              Texture
+            </span>
+            <span class="tick" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M2.5 6.5l2.3 2.3L9.5 3.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </label>
         </div>
       </fieldset>
 
       <div class="hp" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off"></label></div>
 
-      <button type="submit" id="submit">Join the waitlist</button>
+      <button type="submit" class="join" id="submit">Join the waitlist</button>
       <p class="msg" id="msg" role="alert" aria-live="assertive"></p>
       <p class="fine">We'll only email you about Omia's launch. Reply to any email to be removed.</p>
     </form>
@@ -238,16 +448,81 @@
     </div>
   </section>
 
-  <section class="scans" aria-label="How Omia compares scans">
-    <div class="strip" aria-hidden="true">
-      <div class="frame"><div class="well"><div class="sweep"></div></div></div>
-      <div class="link"></div>
-      <div class="frame"><div class="well"></div></div>
-      <div class="link"></div>
-      <div class="frame"><div class="well"></div></div>
+  <section class="demo" aria-label="Illustration of an Omia scan">
+    <div class="phone results" id="phone" role="img" aria-label="Illustration: the Omia scan screen lines up a face in an oval guide, checks the light and distance, scans, then shows breakouts, even tone and texture tracked across three scans.">
+      <div class="screen">
+        <div class="island"></div>
+        <div class="status" id="status"><span>9:41</span><span class="bars"><i style="height:5px"></i><i style="height:7px"></i><i style="height:9px"></i><i style="height:11px"></i></span></div>
+
+        <div class="view v-scan">
+          <div class="title">Skin scan</div>
+          <div class="stage">
+            <svg class="avatar" viewBox="0 0 200 240">
+              <use href="#avatar"/>
+              <g class="zone">
+                <circle cx="88" cy="74" r="2.6" fill="#DF8A78"/><circle cx="108" cy="70" r="2.2" fill="#DF8A78"/>
+                <circle cx="94" cy="156" r="2.4" fill="#DF8A78"/><circle cx="108" cy="152" r="2" fill="#DF8A78"/>
+                <ellipse cx="72" cy="122" rx="12" ry="9" fill="#B9825F" opacity=".28"/>
+                <ellipse cx="127" cy="120" rx="10" ry="8" fill="#B9825F" opacity=".22"/>
+                <ellipse cx="100" cy="120" rx="9" ry="7" fill="url(#grainPat)" opacity=".5"/>
+              </g>
+              <ellipse class="ring r-breakouts" cx="98" cy="72" rx="20" ry="9"/>
+              <ellipse class="ring r-breakouts" cx="101" cy="154" rx="15" ry="8"/>
+              <ellipse class="ring r-tone" cx="72" cy="122" rx="17" ry="13"/>
+              <ellipse class="ring r-tone" cx="127" cy="120" rx="15" ry="12"/>
+              <ellipse class="ring r-texture" cx="100" cy="120" rx="12" ry="10"/>
+            </svg>
+            <svg class="guide" viewBox="0 0 210 270">
+              <ellipse cx="105" cy="128" rx="78" ry="104"/>
+              <path class="corner c1" d="M8 34V8h26"/>
+              <path class="corner c2" d="M176 8h26v26"/>
+              <path class="corner c3" d="M8 236v26h26"/>
+              <path class="corner c4" d="M176 262h26v-26"/>
+            </svg>
+            <div class="beam"></div>
+          </div>
+          <div class="pill" id="pill">Center your face in the oval</div>
+          <div class="checks" id="checks">
+            <span><svg viewBox="0 0 12 12"><path d="M2.5 6.5l2.3 2.3L9.5 3.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>Light</span>
+            <span><svg viewBox="0 0 12 12"><path d="M2.5 6.5l2.3 2.3L9.5 3.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>Distance</span>
+            <span><svg viewBox="0 0 12 12"><path d="M2.5 6.5l2.3 2.3L9.5 3.8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>Angle</span>
+          </div>
+          <div class="progress"><div class="track"><div class="fill"></div></div><p id="ptext">Ready when you are</p></div>
+          <div class="shutter"></div>
+        </div>
+
+        <div class="view v-res">
+          <div class="top">Scan 3</div>
+          <div class="thumbs">
+            <div class="thumb"><div class="pic"><svg viewBox="0 0 200 240"><use href="#avatar"/></svg></div>Scan 1</div>
+            <div class="thumb"><div class="pic"><svg viewBox="0 0 200 240"><use href="#avatar"/></svg></div>Scan 2</div>
+            <div class="thumb now"><div class="pic"><svg viewBox="0 0 200 240"><use href="#avatar"/></svg></div>Today</div>
+          </div>
+          <h3>What you're tracking</h3>
+          <div class="row k-breakouts">
+            <span class="ri"><svg viewBox="0 0 20 20"><circle cx="7" cy="7" r="2" fill="#0B766A"/><circle cx="13" cy="9" r="1.6" fill="#0B766A"/><circle cx="9" cy="14" r="2.2" fill="#0B766A"/></svg></span>
+            <span class="txt"><b>Breakouts</b><small>Visible spots and bumps</small></span>
+            <span class="dots3" aria-hidden="true"><i></i><em></em><i></i><em></em><i></i></span>
+          </div>
+          <div class="row k-tone">
+            <span class="ri"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#0B766A" stroke-width="1.6"/><path d="M10 3a7 7 0 0 1 0 14z" fill="#0B766A"/></svg></span>
+            <span class="txt"><b>Even tone</b><small>Patches and dark spots</small></span>
+            <span class="dots3" aria-hidden="true"><i></i><em></em><i></i><em></em><i></i></span>
+          </div>
+          <div class="row k-texture">
+            <span class="ri"><svg viewBox="0 0 20 20"><g fill="#0B766A"><circle cx="5" cy="5" r="1.3"/><circle cx="10" cy="5" r="1.3"/><circle cx="15" cy="5" r="1.3"/><circle cx="5" cy="10" r="1.3"/><circle cx="10" cy="10" r="1.3"/><circle cx="15" cy="10" r="1.3"/><circle cx="5" cy="15" r="1.3"/><circle cx="10" cy="15" r="1.3"/><circle cx="15" cy="15" r="1.3"/></g></svg></span>
+            <span class="txt"><b>Texture</b><small>Surface bumps and pores</small></span>
+            <span class="dots3" aria-hidden="true"><i></i><em></em><i></i><em></em><i></i></span>
+          </div>
+          <div class="start"><small>Where to start</small><b>Breakouts</b><p>Begin your routine here, then check it against your next scan.</p></div>
+          <div class="note">Illustration with a made-up face</div>
+        </div>
+      </div>
     </div>
-    <div class="caps" aria-hidden="true"><span>Scan 1</span><span></span><span>Scan 2</span><span></span><span>Scan 3</span></div>
-    <p>Each scan is set up the same way, so you're comparing like with like instead of photos taken in different light.</p>
+    <div class="demo-foot">
+      <p>Same light, distance and angle every time, so Scan 3 compares fairly with Scan 1.</p>
+      <button type="button" class="replay" id="replay">Play scan</button>
+    </div>
   </section>
 </main>
 
@@ -258,6 +533,73 @@
 <script src="config.js"></script>
 <script>
 (function () {
+  /* ---------- Texture icon grain (staggered ripple) ---------- */
+  var g = document.getElementById('grainDots');
+  var pts = [[14,14],[22,12],[30,14],[12,22],[22,22],[32,22],[14,30],[22,32],[30,30]];
+  pts.forEach(function (p, i) {
+    var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', p[0]); c.setAttribute('cy', p[1]); c.setAttribute('r', 2);
+    c.setAttribute('class', 'grain');
+    c.style.setProperty('--d', Math.round(Math.hypot(p[0] - 22, p[1] - 22) / 4));
+    g.appendChild(c);
+  });
+
+  /* ---------- Choice tiles: haptics + phone highlight ---------- */
+  var phone = document.getElementById('phone');
+  document.querySelectorAll('.tile input').forEach(function (box) {
+    box.addEventListener('change', function () {
+      phone.classList.toggle('hl-' + box.dataset.k, box.checked);
+      if (box.checked && navigator.vibrate) { try { navigator.vibrate(12); } catch (e) {} }
+    });
+  });
+
+  /* ---------- Scan demo timeline ---------- */
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var pill = document.getElementById('pill');
+  var ptext = document.getElementById('ptext');
+  var checks = document.querySelectorAll('#checks span');
+  var timers = [];
+  function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
+  function reset() {
+    timers.forEach(clearTimeout); timers = [];
+    phone.classList.remove('aligned', 'scanning', 'mapped', 'results', 'snap');
+    checks.forEach(function (c) { c.classList.remove('on'); });
+    pill.textContent = 'Center your face in the oval';
+    ptext.textContent = 'Ready when you are';
+  }
+  function play() {
+    reset();
+    void phone.offsetWidth; // restart CSS transitions
+    at(700, function () { phone.classList.add('aligned'); pill.textContent = 'Face aligned. Hold still'; });
+    at(1100, function () { checks[0].classList.add('on'); });
+    at(1450, function () { checks[1].classList.add('on'); });
+    at(1800, function () { checks[2].classList.add('on'); });
+    at(2300, function () { phone.classList.add('snap', 'scanning'); ptext.textContent = 'Scanning breakouts, tone and texture'; });
+    at(2500, function () { phone.classList.remove('snap'); });
+    at(3100, function () { phone.classList.add('mapped'); });
+    at(4000, function () { pill.textContent = 'Scan saved'; ptext.textContent = 'Lined up with your last scan'; });
+    at(5200, function () { phone.classList.add('results'); });
+  }
+  document.getElementById('replay').addEventListener('click', function () {
+    if (reduce) {
+      // Show the scan state, then the result, without movement.
+      reset(); phone.classList.add('aligned', 'mapped');
+      checks.forEach(function (c) { c.classList.add('on'); });
+      pill.textContent = 'Scan saved';
+      at(2500, function () { phone.classList.add('results'); });
+    } else { play(); }
+  });
+  if (!reduce) {
+    // Play once, the first time the phone is on screen.
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (es) {
+        if (es[0].isIntersecting) { io.disconnect(); play(); }
+      }, { threshold: 0.45 });
+      io.observe(phone);
+    } else { play(); }
+  }
+
+  /* ---------- Signup (unchanged setup) ---------- */
   var form = document.getElementById('signup');
   var email = document.getElementById('email');
   var msg = document.getElementById('msg');
